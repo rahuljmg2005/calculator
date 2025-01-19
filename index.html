@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+        }
+
+        /* Calculator Container */
+        .calc_container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            text-align: center;
+        }
+
+        /* Display Screen */
+        .calc_display {
+            width: 100%;
+            height: 60px;
+            text-align: right;
+            font-size: 24px;
+            padding: 10px;
+            border: none;
+            background: #222;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* Button Grid */
+        .calc_buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Button Styles */
+        .calc_button {
+            width: 100%;
+            height: 60px;
+            font-size: 20px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calc_button:hover {
+            background: #bbb;
+        }
+
+        /* Special Button Styles */
+        .calc_operator {
+            background: #ff9500;
+            color: white;
+        }
+
+        .calc_operator:hover {
+            background: #e08900;
+        }
+
+        .calc_clear {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .calc_clear:hover {
+            background: #d63025;
+        }
+
+        .calc_equals {
+            background: #4cd964;
+            color: white;
+        }
+
+        .calc_equals:hover {
+            background: #3cb656;
+        }
+
+        /* Advanced Function Buttons (Initially Hidden) */
+        .calc_advanced {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Button Animation (Pop-up Effect with Stars) */
+        .calc_button:active {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .calc_container {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: white;">BASIC CALCULATOR</h1>
+    <div class="calc_container">
+        <input type="text" id="calc_display" class="calc_display" disabled>
+
+        <div class="calc_buttons">
+            <button class="calc_button calc_clear" onclick="clearDisplay()">C</button>
+            <button class="calc_button" onclick="backspace()">⌫</button>  <!-- NEW BACKSPACE BUTTON -->
+            <button class="calc_button" onclick="appendValue('%')">%</button> <!-- NEW % BUTTON -->
+            <button class="calc_button calc_operator" onclick="appendValue('/')">/</button>
+
+            <button class="calc_button" onclick="appendValue('7')">7</button>
+            <button class="calc_button" onclick="appendValue('8')">8</button>
+            <button class="calc_button" onclick="appendValue('9')">9</button>
+            <button class="calc_button calc_operator" onclick="appendValue('*')">*</button>
+
+            <button class="calc_button" onclick="appendValue('4')">4</button>
+            <button class="calc_button" onclick="appendValue('5')">5</button>
+            <button class="calc_button" onclick="appendValue('6')">6</button>
+            <button class="calc_button calc_operator" onclick="appendValue('-')">-</button>
+
+            <button class="calc_button" onclick="appendValue('1')">1</button>
+            <button class="calc_button" onclick="appendValue('2')">2</button>
+            <button class="calc_button" onclick="appendValue('3')">3</button>
+            <button class="calc_button calc_operator" onclick="appendValue('+')">+</button> <!-- ADDED BACK + OPERATOR -->
+
+            <button class="calc_button" onclick="appendValue('0')">0</button>
+            <button class="calc_button" onclick="appendValue('.')">.</button>
+            <button class="calc_button calc_equals" onclick="calculateResult()">=</button>
+            <button class="calc_button" onclick="toggleAdvanced()">More</button>
+        </div>
+
+        <!-- Advanced Scientific Functions (Initially Hidden) -->
+        <div class="calc_advanced" id="advanced_buttons">
+            <button class="calc_button" onclick="toggleDegRad()">Deg</button>
+            <button class="calc_button" onclick="appendValue('sin(')">sin</button>
+            <button class="calc_button" onclick="appendValue('cos(')">cos</button>
+            <button class="calc_button" onclick="appendValue('tan(')">tan</button>
+
+            <button class="calc_button" onclick="appendValue('log(')">log</button>
+            <button class="calc_button" onclick="appendValue('ln(')">ln</button>
+            <button class="calc_button" onclick="appendValue('√(')">√</button>
+            <button class="calc_button" onclick="appendValue('^')">x^y</button>
+
+            <button class="calc_button" onclick="appendValue('π')">π</button>
+            
+            <button class="calc_button" onclick="appendValue('!')">x!</button>
+
+            <!-- Newly Added Parentheses -->
+            <button class="calc_button" onclick="appendValue('(')">(</button>
+            <button class="calc_button" onclick="appendValue(')')">)</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById("calc_display");
+        let isDeg = true;
+
+        function appendValue(value) {
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = "";
+        }
+
+        function backspace() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function toggleDegRad() {
+            isDeg = !isDeg;
+            alert(isDeg ? "Degree Mode" : "Radian Mode");
+        }
+
+        function toggleAdvanced() {
+            let advButtons = document.getElementById("advanced_buttons");
+            advButtons.style.display = advButtons.style.display === "grid" ? "none" : "grid";
+        }
+
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        function calculateResult() {
+            let input = display.value;
+
+            input = input.replace(/π/g, "Math.PI");
+            input = input.replace(/e/g, "Math.E");
+            input = input.replace(/√\(/g, "Math.sqrt(");
+            input = input.replace(/log\(/g, "Math.log10(");
+            input = input.replace(/ln\(/g, "Math.log(");
+            input = input.replace(/\^/g, "**");
+
+            input = input.replace(/(\d+)!/g, (match, num) => factorial(parseInt(num)));
+
+            if (isDeg) {
+                input = input.replace(/sin\(([^)]+)\)/g, (match, value) => `Math.sin(${parseFloat(value)} * Math.PI / 180)`);
+                input = input.replace(/cos\(([^)]+)\)/g, (match, value) => `Math.cos(${parseFloat(value)} * Math.PI / 180)`);
+                input = input.replace(/tan\(([^)]+)\)/g, (match, value) => `Math.tan(${parseFloat(value)} * Math.PI / 180)`);
+            }
+
+            try {
+                display.value = eval(input);
+            } catch (error) {
+                display.value = "Error";
+            }
+        }
+    </script>
+</body>
+</html>
